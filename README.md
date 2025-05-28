@@ -1,6 +1,9 @@
 # VCVM
 VolumeControl for Voicemeeter
 
+This software is not affiliated and is an independent software using VoicemeeterRemoteAPI.
+Support Voicemeeter's amazing tool at https://vb-audio.com/index.htm
+
 ## Usage
 Launch with `python VCVM.py`
 
