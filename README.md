@@ -7,6 +7,11 @@ Launch with `python VCVM.py`
 You can also compile it to an exe by having the *.ico and *.spec file in same folder as VCVM.py and launching the file "build-exe.bat". The output exe will be in the "dist" folder.
 Then you simply execute the exe file to launch it.
 
+Once launched, the app will run in systray. Then you can change Windows volume via keyboard, laptop buttons, mousewheel or going to Windows Sound Volume in systray, it will impact Voicemeeter volume as well.
+
+![Image](https://i.imgur.com/xjDvio1.gif)
+
+
 ## Systray
 Right click on the systray icon to chose if you want to app to start with Windows.
 Control from there if you want logging, and if you also want verbose logging (a bit more details).
