@@ -736,11 +736,11 @@ class VoicemeeterVolumeSync:
             MB_ICONINFORMATION = 0x40
             
             title = "About VolumeControl for Voicemeeter"
-            message = ("VolumeControl for Voicemeeter\n"
+            message = ("VolumeControl for Voicemeeter.\n"
                       "Version 1.0.0 of may 2025\n\n"
-                      "https://github.com/hycday/VCVM"
-                      "Synchronizes Windows volume with Voicemeeter\n"
-                      "support them : https://vb-audio.com/\n\n"
+                      "https://github.com/hycday/VCVM \n\n"
+                      "Synchronizes Windows volume with Voicemeeter.\n"
+                      "Support them : https://vb-audio.com/\n\n"
                       "by hycday")
             
             result = ctypes.windll.user32.MessageBoxW(
