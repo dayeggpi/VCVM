@@ -77,6 +77,8 @@ class LoggerMaster:
         
 class VoicemeeterVolumeSync:
     def __init__(self):
+        self.vm_lock = threading.RLock()
+        self.vm_connected = False
         self.running = False
         self.connected = False
         self.vol_interface = None
@@ -278,6 +280,7 @@ class VoicemeeterVolumeSync:
             try:
                 if os.path.exists(dll_path):
                     self.voicemeeter = ctypes.WinDLL(dll_path)
+                    self._setup_vm_prototypes()
                     logclass.log(f"Loaded Voicemeeter DLL from: {dll_path} (attempt {attempt+1})")
                     return
                 else:
@@ -290,6 +293,16 @@ class VoicemeeterVolumeSync:
         self.voicemeeter = None
         logclass.log("Giving up on loading Voicemeeter DLL after retries", 'error')
 
+    def _setup_vm_prototypes(self):
+        # return types
+        self.voicemeeter.VBVMR_Login.restype = ctypes.c_long
+        self.voicemeeter.VBVMR_Logout.restype = ctypes.c_long
+        self.voicemeeter.VBVMR_GetParameterFloat.restype = ctypes.c_long
+        self.voicemeeter.VBVMR_SetParameterFloat.restype = ctypes.c_long
+        # arg types
+        self.voicemeeter.VBVMR_GetParameterFloat.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_float)]
+        self.voicemeeter.VBVMR_SetParameterFloat.argtypes = [ctypes.c_char_p, ctypes.c_float]
+        
     def load_tray_icon(self):
         """Load the tray icon image"""
         try:
@@ -327,8 +340,10 @@ class VoicemeeterVolumeSync:
         
         for attempt in range(max_attempts):
             try:
-                res = self.voicemeeter.VBVMR_Login()
+                with self.vm_lock:
+                    res = self.voicemeeter.VBVMR_Login()
                 if res == 0:
+                    self.vm_connected = True
                     logclass.log(f"Connected to Voicemeeter on attempt {attempt+1}")
                     return True
                 else:
@@ -348,7 +363,8 @@ class VoicemeeterVolumeSync:
                     time.sleep(wait_time)
 
         logclass.log(f"Failed to connect to Voicemeeter after {max_attempts} attempts", 'error')
-        self.update_tray_icon("icon_status_off.ico")        
+        self.update_tray_icon("icon_status_off.ico")      
+        self.vm_connected = False        
         return False
 
     def get_voicemeeter_error_message(self, error_code):
@@ -370,10 +386,13 @@ class VoicemeeterVolumeSync:
         if not self.voicemeeter:
             return
         try:
-            self.voicemeeter.VBVMR_Logout()
-            logclass.log("Disconnected from Voicemeeter")
+            with self.vm_lock:
+                self.voicemeeter.VBVMR_Logout()
+                logclass.log("Disconnected from Voicemeeter")
         except Exception as e:
             logclass.log(f"Error disconnecting from Voicemeeter: {e}", 'error')
+        finally:
+            self.vm_connected = False
 
     def set_bus_gain(self, bus_index, gain_db):
         """Set gain for a specific bus"""
@@ -381,9 +400,12 @@ class VoicemeeterVolumeSync:
             return
         try:
             param_name = f"Bus[{bus_index}].Gain".encode("utf-8")
-            self.voicemeeter.VBVMR_SetParameterFloat(ctypes.c_char_p(param_name), ctypes.c_float(gain_db))
+            with self.vm_lock:
+                self.voicemeeter.VBVMR_SetParameterFloat(ctypes.c_char_p(param_name), ctypes.c_float(gain_db))
         except Exception as e:
             logclass.log(f"Error setting bus {bus_index} gain: {e}", 'error')
+            self.vm_connected = False
+
 
     def get_bus_gain(self, bus_index):
         """Get gain for a specific bus"""
@@ -392,9 +414,17 @@ class VoicemeeterVolumeSync:
         try:
             param_name = f"Bus[{bus_index}].Gain".encode("utf-8")
             gain = ctypes.c_float()
-            result = self.voicemeeter.VBVMR_GetParameterFloat(ctypes.c_char_p(param_name), ctypes.byref(gain))
-            return gain.value if result == 0 else None
+            with self.vm_lock:
+                result = self.voicemeeter.VBVMR_GetParameterFloat(ctypes.c_char_p(param_name), ctypes.byref(gain))
+            """return gain.value if result == 0 else None"""
+            if result == 0:
+                self.vm_connected = True
+                return gain.value
+            else:
+                self.vm_connected = False
+                return None
         except Exception as e:
+            self.vm_connected = False            
             logclass.log(f"Error getting bus {bus_index} gain: {e}", 'error')
             return None
 
@@ -444,23 +474,48 @@ class VoicemeeterVolumeSync:
         logclass.log("Failed to initialize Windows volume interface after retries", 'error')
         return None
 
+
     def get_windows_volume(self):
-        """Get current Windows volume"""
         try:
             if self.vol_interface:
                 return int(self.vol_interface.GetMasterVolumeLevelScalar() * 100)
         except Exception as e:
             logclass.log(f"Error getting Windows volume: {e}", 'error')
+            # Recreate the endpoint interface
+            self.vol_interface = None
+            time.sleep(0.5)
+            self.vol_interface = self.init_windows_volume_interface()
         return 0
 
     def set_windows_volume(self, vol_percent):
-        """Set Windows volume"""
         try:
             if self.vol_interface:
                 scalar = vol_percent / 100
                 self.vol_interface.SetMasterVolumeLevelScalar(scalar, None)
         except Exception as e:
             logclass.log(f"Error setting Windows volume: {e}", 'error')
+            self.vol_interface = None
+            time.sleep(0.5)
+            self.vol_interface = self.init_windows_volume_interface()
+            
+            
+    # def get_windows_volume(self):
+        # """Get current Windows volume"""
+        # try:
+            # if self.vol_interface:
+                # return int(self.vol_interface.GetMasterVolumeLevelScalar() * 100)
+        # except Exception as e:
+            # logclass.log(f"Error getting Windows volume: {e}", 'error')
+        # return 0
+
+    # def set_windows_volume(self, vol_percent):
+        # """Set Windows volume"""
+        # try:
+            # if self.vol_interface:
+                # scalar = vol_percent / 100
+                # self.vol_interface.SetMasterVolumeLevelScalar(scalar, None)
+        # except Exception as e:
+            # logclass.log(f"Error setting Windows volume: {e}", 'error')
 
     def is_voicemeeter_ok(self):
         """Check if Voicemeeter is responding"""
@@ -500,6 +555,13 @@ class VoicemeeterVolumeSync:
             try:
                 current_windows_vol = self.get_windows_volume()
                 current_vm_gain = self.get_bus_gain(0) or 0
+                if current_vm_gain is None:
+                    # likely disconnected; attempt lazy reconnect
+                    if not self.vm_connected:
+                        time.sleep(1.0)
+                        self.connect_voicemeeter()
+                    continue
+                
                 time_now = time.time()
 
                 if abs(current_windows_vol - self.last_windows_vol) >= volume_threshold:
@@ -558,6 +620,7 @@ class VoicemeeterVolumeSync:
 
             except Exception as e:
                 logclass.log(f"Error in sync loop: {e}", 'error')
+                self.vm_connected = False
                 time.sleep(1)
 
         logclass.log("Volume sync stopped")
@@ -567,19 +630,23 @@ class VoicemeeterVolumeSync:
         """Monitor Voicemeeter connection status"""
         last_status = None
         while self.running:
+
             try:
-                self.connected = self.is_voicemeeter_ok()
-                if self.connected != last_status:
+                """self.connected = self.is_voicemeeter_ok()"""
+                status = self.vm_connected
+                """if self.connected != last_status:"""
+                if status != last_status:
                     status_text = 'Connected' if self.connected else 'Disconnected'
                     if self.logging_verbose:
                         logclass.log(f"Voicemeeter status changed: {status_text}")
                     last_status = self.connected
 
-                    if self.connected:
+                    """if self.connected:"""
+                    if status:
                         self.update_tray_icon("icon_status_on.ico")
                     else:
                         self.update_tray_icon("icon_status_off.ico")
-
+                    last_status = status
             except Exception as e:
                 logclass.log(f"Error monitoring Voicemeeter status: {e}", 'error')
                 self.connected = False
