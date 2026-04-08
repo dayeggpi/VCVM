@@ -841,7 +841,7 @@ class VoicemeeterVolumeSync:
             
             title = "About VolumeControl for Voicemeeter"
             message = ("VolumeControl for Voicemeeter.\n"
-                      "Version 1.0.0 of may 2025\n\n"
+                      "Version 1.0.2 of april 2026\n\n"
                       "https://github.com/dayeggpi \n\n"
                       "Synchronizes Windows volume with Voicemeeter.\n"
                       "Support them : https://vb-audio.com/\n\n"
@@ -861,7 +861,7 @@ class VoicemeeterVolumeSync:
             logclass.log(error_msg, level='error', exc_info=True)
             print(f"Error: {error_msg}")
             print("\n=== About VolumeControl for Voicemeeter ===")
-            print("Version 1.0.0")  
+            print("Version 1.0.2")  
             print("https://github.com/dayeggpi")  
             print("Synchronizes Windows volume with Voicemeeter")
             print("by dayeggpi")
