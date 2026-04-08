@@ -1,0 +1,8 @@
+# Runtime dependencies for VCVM.py
+pystray==0.19.4
+Pillow==8.4.0
+pycaw==20220416
+comtypes==1.1.14
+
+# Build dependency
+PyInstaller==4.10

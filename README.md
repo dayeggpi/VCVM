@@ -5,8 +5,9 @@ This software is not affiliated and is an independent software using Voicemeeter
 Support Voicemeeter's amazing tool at https://vb-audio.com/index.htm
 
 ## Usage
+Install `pip install -r requirements.txt`
 Launch with `python VCVM.py`
-
+or
 You can also compile it to an exe by having the *.ico and *.spec file in same folder as VCVM.py and launching the file "build-exe.bat". The output exe will be in the "dist" folder.
 Then you simply execute the exe file to launch it.
 

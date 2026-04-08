@@ -1,4 +1,4 @@
-call pyinstaller --onefile --windowed --name "VCVM" ^
+call pyinstaller --clean --noconfirm --onefile --windowed --name "VCVM" ^
   --hidden-import pystray ^
   --hidden-import pystray._win32 ^
   --hidden-import PIL ^
@@ -7,9 +7,14 @@ call pyinstaller --onefile --windowed --name "VCVM" ^
   --hidden-import pycaw ^
   --hidden-import pycaw.pycaw ^
   --hidden-import comtypes ^
-  --hidden-import comtypes.client ^
-  --collect-data pycaw ^
-  --collect-binaries comtypes ^
+  --exclude-module IPython ^
+  --exclude-module jupyter ^
+  --exclude-module matplotlib ^
+  --exclude-module numpy ^
+  --exclude-module pandas ^
+  --exclude-module pytest ^
+  --exclude-module scipy ^
+  --exclude-module tkinter ^
   --add-data "icon.ico;." ^
   --add-data "icon_status_on.ico;." ^
   --add-data "icon_status_off.ico;." ^
