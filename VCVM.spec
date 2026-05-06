@@ -1,4 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_dynamic_libs
+
+datas = [('icon.ico', '.'), ('icon_status_on.ico', '.'), ('icon_status_off.ico', '.')]
+binaries = []
+datas += collect_data_files('pycaw')
+binaries += collect_dynamic_libs('comtypes')
 
 
 block_cipher = None
@@ -6,13 +13,13 @@ block_cipher = None
 
 a = Analysis(['VCVM.py'],
              pathex=[],
-             binaries=[],
-             datas=[('icon.ico', '.'), ('icon_status_on.ico', '.'), ('icon_status_off.ico', '.')],
-             hiddenimports=['pystray', 'pystray._win32', 'PIL', 'PIL.Image', 'PIL.ImageDraw', 'pycaw', 'pycaw.pycaw', 'comtypes'],
+             binaries=binaries,
+             datas=datas,
+             hiddenimports=['pystray', 'pystray._win32', 'PIL', 'PIL.Image', 'PIL.ImageDraw', 'pycaw', 'pycaw.pycaw', 'comtypes', 'comtypes.client'],
              hookspath=[],
              hooksconfig={},
              runtime_hooks=[],
-             excludes=['IPython', 'jupyter', 'matplotlib', 'numpy', 'pandas', 'pytest', 'scipy', 'tkinter'],
+             excludes=['numpy', 'pandas', 'scipy', 'matplotlib', 'tkinter'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher,

@@ -215,10 +215,9 @@ class VoicemeeterVolumeSync:
                 'bus': '0'
             },
             'Startup': {
-                'delay_seconds': '10',
+                'delay_seconds': '5',
                 'max_retry_attempts': '5',
-                'retry_interval': '3',
-                'task_delay_seconds': '15'
+                'retry_interval': '2'
             }
         }
 
@@ -272,15 +271,6 @@ class VoicemeeterVolumeSync:
                 self.config.write(f)
         except Exception as e:
             print(f"Error saving config: {e}")
-
-    def get_configured_buses(self):
-        """Return the configured Voicemeeter bus indexes."""
-        bus_list_str = self.config.get('Settings', 'bus', fallback='0,1,2,3,4')
-        try:
-            return [int(x.strip()) for x in bus_list_str.split(',') if x.strip()]
-        except ValueError as e:
-            logclass.log(f"Invalid bus configuration: '{bus_list_str}' - {e}", 'error')
-            return [0]
 
     def load_voicemeeter_dll(self):
         """Load the Voicemeeter DLL with retry"""
@@ -530,7 +520,7 @@ class VoicemeeterVolumeSync:
     def is_voicemeeter_ok(self):
         """Check if Voicemeeter is responding"""
         try:
-            return self.get_bus_gain(self.get_configured_buses()[0]) is not None
+            return self.get_bus_gain(0) is not None
         except:
             return False
 
@@ -539,61 +529,52 @@ class VoicemeeterVolumeSync:
         logclass.log("Starting volume sync...")
         
         self.wait_for_system_ready()
+        
+        if not self.connect_voicemeeter():
+            logclass.log("Failed to connect to Voicemeeter - sync will not start", 'error')
+            return
+            
+        self.vol_interface = self.init_windows_volume_interface()
+        if not self.vol_interface:
+            logclass.log("Failed to initialize Windows volume interface - sync will not start", 'error')
+            self.disconnect_voicemeeter()
+            return
+
+        self.last_windows_vol = self.get_windows_volume()
+        self.last_vm_gain = self.get_bus_gain(0) or 0
+        self.last_change_time = time.time()
+
+        logclass.log("Volume sync active. Monitoring...")
 
         sync_interval = self.config.getfloat('Settings', 'sync_interval')
         change_timeout = self.config.getfloat('Settings', 'change_timeout')
         gain_threshold = self.config.getfloat('Settings', 'gain_threshold')
         volume_threshold = self.config.getint('Settings', 'volume_threshold')
-        retry_interval = self.config.getint('Startup', 'retry_interval', fallback=2)
-        sync_initialized = False
+        bus_list_str = self.config.get('Settings', 'bus', fallback='0')
+        try:
+            bus_list = [int(x.strip()) for x in bus_list_str.split(',')]
+        except ValueError as e:
+            logclass.log(f"Invalid bus configuration: '{bus_list_str}' - {e}", 'error')
+            bus_list = [0]
 
         while self.running:
             try:
-                if not self.vm_connected:
-                    if self.connect_voicemeeter():
-                        sync_initialized = False
-                    else:
-                        logclass.log(
-                            f"Voicemeeter not ready yet; retrying in {retry_interval}s",
-                            'warning'
-                        )
-                        time.sleep(retry_interval)
-                        continue
-
-                if not self.vol_interface:
-                    self.vol_interface = self.init_windows_volume_interface()
-                    if not self.vol_interface:
-                        logclass.log(
-                            f"Windows audio interface not ready yet; retrying in {retry_interval}s",
-                            'warning'
-                        )
-                        self.disconnect_voicemeeter()
-                        time.sleep(retry_interval)
-                        continue
-
-                if not sync_initialized:
-                    primary_bus = self.get_configured_buses()[0]
-                    self.last_windows_vol = self.get_windows_volume()
-                    self.last_vm_gain = self.get_bus_gain(primary_bus) or 0
-                    self.last_change_time = time.time()
-                    self.last_change_source = None
-                    sync_initialized = True
-                    logclass.log("Volume sync active. Monitoring...")
-
                 current_windows_vol = self.get_windows_volume()
-                primary_bus = self.get_configured_buses()[0]
-                current_vm_gain = self.get_bus_gain(primary_bus) or 0
+                current_vm_gain = self.get_bus_gain(0) or 0
                 if current_vm_gain is None:
                     # likely disconnected; attempt lazy reconnect
-                    self.vm_connected = False
-                    time.sleep(retry_interval)
+                    if not self.vm_connected:
+                        time.sleep(1.0)
+                        self.connect_voicemeeter()
+                    time.sleep(sync_interval)
                     continue
-                
+
                 time_now = time.time()
 
                 if abs(current_windows_vol - self.last_windows_vol) >= volume_threshold:
                     gain = self.map_volume_to_gain(current_windows_vol)
-                    for bus in self.get_configured_buses():
+
+                    for bus in bus_list:
                         try:
                             self.set_bus_gain(bus, gain)
                             self.last_vm_gain = gain
@@ -608,15 +589,12 @@ class VoicemeeterVolumeSync:
                     self.last_change_source = 'windows'                    
 
                 elif time_now - self.last_change_time > change_timeout:
-                    if abs(current_vm_gain - self.last_vm_gain) >= gain_threshold:        
-                        if self.last_change_source == 'windows':
-                            continue  # Prevent bounce back        
-                            
+                    if abs(current_vm_gain - self.last_vm_gain) >= gain_threshold and self.last_change_source != 'windows':
                         target_volume = self.map_gain_to_volume(current_vm_gain)
                         gain_diff = current_vm_gain - self.last_vm_gain
                         if self.logging_verbose:
                             logclass.log(f"Voicemeeter gain changed: {self.last_vm_gain}dB → {current_vm_gain}dB (Δ{gain_diff:+.1f}dB) | Target Windows vol: {target_volume}%", 'debug')
-                        
+
                         if abs(target_volume - current_windows_vol) > 10:
                             step = int((target_volume - current_windows_vol) * 0.3)
                             new_volume = current_windows_vol + step
@@ -629,21 +607,16 @@ class VoicemeeterVolumeSync:
                             self.last_windows_vol = target_volume
                             if self.logging_verbose:
                                 logclass.log(f"Applied direct Windows volume adjustment: {current_windows_vol}% → {target_volume}%", 'debug')
-                        
+
                         self.last_vm_gain = current_vm_gain
                         self.last_change_time = time_now
                         self.last_change_source = 'voicemeeter'
-                    # Don't sync if we were the one who just set the gain
-                    if abs(current_vm_gain - self.last_vm_gain) < gain_threshold:
-                        continue
                 time.sleep(sync_interval)
 
             except Exception as e:
                 logclass.log(f"Error in sync loop: {e}", 'error')
                 self.vm_connected = False
-                self.vol_interface = None
-                sync_initialized = False
-                time.sleep(retry_interval)
+                time.sleep(1)
 
         logclass.log("Volume sync stopped")
         self.disconnect_voicemeeter()
@@ -672,7 +645,7 @@ class VoicemeeterVolumeSync:
             except Exception as e:
                 logclass.log(f"Error monitoring Voicemeeter status: {e}", 'error')
                 self.connected = False
-            time.sleep(1)
+            time.sleep(5)
         
     def start_sync(self):
         """Start the volume synchronization"""
@@ -706,9 +679,7 @@ class VoicemeeterVolumeSync:
         try:
             result = subprocess.run(
                 ["schtasks", "/Delete", "/TN", task_name, "/F"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                universal_newlines=True
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
             )
             if result.returncode == 0:
                 print(f"Scheduled task '{task_name}' deleted.")
@@ -728,8 +699,6 @@ class VoicemeeterVolumeSync:
             python_exe = sys.executable
             script_path = os.path.abspath(__file__)
             cmd = f'"{python_exe}" "{script_path}"' if is_py else f'"{sys.executable}"' #keep as such to AVOID having quotes around python path, otherwise will fail
-            task_delay_seconds = self.config.getint('Startup', 'task_delay_seconds', fallback=15)
-            task_delay = f"0000:{task_delay_seconds:02d}"
 
             schtasks_cmd = [
                 "schtasks",
@@ -737,21 +706,14 @@ class VoicemeeterVolumeSync:
                 "/TN", task_name,
                 "/TR", cmd,
                 "/SC", "ONLOGON",
-                "/RL", "LIMITED",
-                "/DELAY", task_delay,
+                "/RL", "HIGHEST",
+                "/DELAY", "0000:05",
                 "/F"
             ]
             try:
-                result = subprocess.run(
-                    schtasks_cmd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    universal_newlines=True
-                )
+                result = subprocess.run(schtasks_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 if result.returncode == 0:
-                    logclass.log(
-                        f"Autostart task created successfully with {task_delay_seconds}s delay and limited privileges"
-                    )
+                    logclass.log("Autostart task created successfully with 5 seconds delay")
                 else:
                     logclass.log(f"Failed to create autostart task: {result.stderr.strip()}", 'error')
             except Exception as e:
@@ -760,9 +722,7 @@ class VoicemeeterVolumeSync:
             try:
                 result = subprocess.run(
                     ["schtasks", "/Delete", "/TN", task_name, "/F"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    universal_newlines=True
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
                 )
                 if result.returncode == 0:
                     logclass.log("Autostart task removed successfully")
@@ -774,9 +734,7 @@ class VoicemeeterVolumeSync:
     def is_autostart_enabled(self):
         result = subprocess.run(
             ["schtasks", "/Query", "/TN", "VolumeControl for Voicemeeter"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
         )
         return result.returncode == 0
 
@@ -841,7 +799,7 @@ class VoicemeeterVolumeSync:
             
             title = "About VolumeControl for Voicemeeter"
             message = ("VolumeControl for Voicemeeter.\n"
-                      "Version 1.0.2 of april 2026\n\n"
+                      "Version 1.0.2 of may 2026\n\n"
                       "https://github.com/dayeggpi \n\n"
                       "Synchronizes Windows volume with Voicemeeter.\n"
                       "Support them : https://vb-audio.com/\n\n"
