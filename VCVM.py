@@ -13,6 +13,10 @@ from PIL import Image, ImageDraw
 import ctypes
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from comtypes import CLSCTX_ALL, wintypes
+import tempfile
+from xml.sax.saxutils import escape
+
+
 
 class LoggerMaster:
     def __init__(self):
@@ -712,44 +716,155 @@ class VoicemeeterVolumeSync:
             return False
 
     def toggle_autostart(self, enable):
-        """Toggle autostart using Windows Task Scheduler with delay"""
-        task_name = "VolumeControl for Voicemeeter"
-        if enable:
-            is_py = not getattr(sys, 'frozen', False)
-            python_exe = sys.executable
-            script_path = os.path.abspath(__file__)
-            cmd = f'"{python_exe}" "{script_path}"' if is_py else f'"{sys.executable}"' #keep as such to AVOID having quotes around python path, otherwise will fail
+        """Create/remove the application's Windows logon task."""
 
-            schtasks_cmd = [
-                "schtasks",
-                "/Create",
-                "/TN", task_name,
-                "/TR", cmd,
-                "/SC", "ONLOGON",
-                "/RL", "HIGHEST",
-                "/DELAY", "0000:05",
-                "/F"
-            ]
-            try:
-                result = subprocess.run(schtasks_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-                if result.returncode == 0:
-                    logclass.log("Autostart task created successfully with 5 seconds delay")
-                else:
-                    logclass.log(f"Failed to create autostart task: {result.stderr.strip()}", 'error')
-            except Exception as e:
-                logclass.log(f"Error creating autostart task: {e}", 'error')
-        else:
+        task_name = "VolumeControl for Voicemeeter"
+
+        if not enable:
             try:
                 result = subprocess.run(
                     ["schtasks", "/Delete", "/TN", task_name, "/F"],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
+                    capture_output=True,
+                    text=True,
                 )
+
                 if result.returncode == 0:
                     logclass.log("Autostart task removed successfully")
                 else:
-                    logclass.log(f"Failed to remove autostart task: {result.stderr.strip()}", 'error')
+                    logclass.log(
+                        f"Failed to remove autostart task: {result.stderr.strip()}",
+                        "error",
+                    )
+
             except Exception as e:
-                logclass.log(f"Error removing autostart task: {e}", 'error')
+                logclass.log(f"Error removing autostart task: {e}", "error")
+
+            return
+
+        xml_path = None
+
+        try:
+            is_frozen = getattr(sys, "frozen", False)
+
+            # Keep the executable path and its arguments separate in Task Scheduler.
+            # This avoids fragile manual quoting of the whole command line.
+            if is_frozen:
+                command = sys.executable
+                arguments = ""
+                working_directory = os.path.dirname(sys.executable)
+            else:
+                command = sys.executable
+                script_path = os.path.abspath(__file__)
+
+                # Produces safe Windows command-line quoting for the script argument.
+                arguments = subprocess.list2cmdline([script_path])
+                working_directory = os.path.dirname(script_path)
+
+            # Use DOMAIN\username (or COMPUTER\username), not just a short username.
+            current_user = subprocess.check_output(
+                ["whoami"],
+                text=True,
+                stderr=subprocess.PIPE,
+            ).strip()
+
+            # Escape values because paths/usernames can theoretically contain XML
+            # special characters such as "&".
+            command_xml = escape(command)
+            arguments_xml = escape(arguments)
+            working_directory_xml = escape(working_directory)
+            current_user_xml = escape(current_user)
+
+            task_xml = f"""<?xml version="1.0" encoding="UTF-16"?>
+    <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+      <RegistrationInfo>
+        <Description>Launch VolumeControl for Voicemeeter when this user logs on.</Description>
+      </RegistrationInfo>
+
+      <Triggers>
+        <LogonTrigger>
+          <Enabled>true</Enabled>
+          <UserId>{current_user_xml}</UserId>
+          <Delay>PT5S</Delay>
+        </LogonTrigger>
+      </Triggers>
+
+      <Principals>
+        <Principal id="Author">
+          <UserId>{current_user_xml}</UserId>
+          <LogonType>InteractiveToken</LogonType>
+          <RunLevel>HighestAvailable</RunLevel>
+        </Principal>
+      </Principals>
+
+      <Settings>
+        <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+        <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+        <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+        <AllowHardTerminate>true</AllowHardTerminate>
+        <StartWhenAvailable>false</StartWhenAvailable>
+        <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+        <AllowStartOnDemand>true</AllowStartOnDemand>
+        <Enabled>true</Enabled>
+        <Hidden>false</Hidden>
+        <RunOnlyIfIdle>false</RunOnlyIfIdle>
+        <WakeToRun>false</WakeToRun>
+        <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
+        <Priority>7</Priority>
+      </Settings>
+
+      <Actions Context="Author">
+        <Exec>
+          <Command>{command_xml}</Command>
+          <Arguments>{arguments_xml}</Arguments>
+          <WorkingDirectory>{working_directory_xml}</WorkingDirectory>
+        </Exec>
+      </Actions>
+    </Task>
+    """
+
+            # Task Scheduler XML is commonly written as UTF-16.
+            with tempfile.NamedTemporaryFile(
+                mode="w",
+                suffix=".xml",
+                encoding="utf-16",
+                delete=False,
+            ) as temp_file:
+                temp_file.write(task_xml)
+                xml_path = temp_file.name
+
+            result = subprocess.run(
+                [
+                    "schtasks",
+                    "/Create",
+                    "/TN", task_name,
+                    "/XML", xml_path,
+                    "/F",
+                ],
+                capture_output=True,
+                text=True,
+            )
+
+            if result.returncode == 0:
+                logclass.log(
+                    "Autostart task created successfully with a 5-second delay; "
+                    "it is allowed to start and continue on battery power."
+                )
+            else:
+                logclass.log(
+                    f"Failed to create autostart task: {result.stderr.strip()}",
+                    "error",
+                )
+
+        except Exception as e:
+            logclass.log(f"Error creating autostart task: {e}", "error")
+
+        finally:
+            if xml_path:
+                try:
+                    os.remove(xml_path)
+                except OSError:
+                    pass
+
 
     def is_autostart_enabled(self):
         result = subprocess.run(

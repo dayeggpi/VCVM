@@ -1,0 +1,193 @@
+2026-05-24 10:08:27,782 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI222282\icon.ico
+2026-05-24 10:08:27,782 - INFO - Application initialized
+2026-05-24 10:08:27,782 - INFO - Starting VolumeControl for Voicemeeter application
+2026-05-24 10:08:27,782 - INFO - Starting volume sync...
+2026-05-24 10:08:27,782 - INFO - Volume sync started
+2026-05-24 10:08:27,783 - INFO - Starting tray icon...
+2026-05-24 10:08:27,783 - INFO - Tray icon updated to: icon_status_off.ico
+2026-05-24 10:08:27,784 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-05-24 10:08:28,150 - INFO - Connected to Voicemeeter on attempt 1
+2026-05-24 10:08:28,206 - INFO - Initialized Windows volume interface (attempt 1)
+2026-05-24 10:08:28,208 - INFO - Volume sync active. Monitoring...
+2026-05-24 10:08:32,788 - INFO - Tray icon updated to: icon_status_on.ico
+2026-06-28 11:48:24,611 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI129202\icon.ico
+2026-06-28 11:48:24,611 - INFO - Application initialized
+2026-06-28 11:48:24,611 - INFO - Starting VolumeControl for Voicemeeter application
+2026-06-28 11:48:24,611 - INFO - Starting volume sync...
+2026-06-28 11:48:24,611 - INFO - Volume sync started
+2026-06-28 11:48:24,611 - INFO - Starting tray icon...
+2026-06-28 11:48:24,613 - INFO - Tray icon updated to: icon_status_off.ico
+2026-06-28 11:48:24,646 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-06-28 11:48:25,042 - INFO - Connected to Voicemeeter on attempt 1
+2026-06-28 11:48:25,091 - INFO - Initialized Windows volume interface (attempt 1)
+2026-06-28 11:48:25,091 - INFO - Volume sync active. Monitoring...
+2026-06-28 11:48:29,617 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-01 19:15:31,002 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI54442\icon.ico
+2026-07-01 19:15:31,003 - INFO - Detected startup launch - 76.7s since boot
+2026-07-01 19:15:31,003 - INFO - Application initialized
+2026-07-01 19:15:31,003 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-01 19:15:31,004 - INFO - Starting volume sync...
+2026-07-01 19:15:31,004 - INFO - Startup launch detected - waiting 5s for system to be ready...
+2026-07-01 19:15:31,004 - INFO - Volume sync started
+2026-07-01 19:15:31,004 - INFO - Starting tray icon...
+2026-07-01 19:15:31,005 - INFO - Tray icon updated to: icon_status_off.ico
+2026-07-01 19:15:36,005 - INFO - COM initialized successfully
+2026-07-01 19:15:36,068 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-01 19:15:36,068 - INFO - Audio system appears ready
+2026-07-01 19:15:36,100 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-01 19:15:36,447 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-01 19:15:36,496 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-01 19:15:36,496 - INFO - Volume sync active. Monitoring...
+2026-07-01 19:15:41,012 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-04 09:14:29,948 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI76602\icon.ico
+2026-07-04 09:14:29,948 - INFO - Detected startup launch - 157.6s since boot
+2026-07-04 09:14:29,949 - INFO - Application initialized
+2026-07-04 09:14:29,949 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-04 09:14:29,949 - INFO - Starting volume sync...
+2026-07-04 09:14:29,949 - INFO - Startup launch detected - waiting 5s for system to be ready...
+2026-07-04 09:14:29,949 - INFO - Volume sync started
+2026-07-04 09:14:29,949 - INFO - Starting tray icon...
+2026-07-04 09:14:29,951 - INFO - Tray icon updated to: icon_status_off.ico
+2026-07-04 09:14:34,950 - INFO - COM initialized successfully
+2026-07-04 09:14:35,007 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-04 09:14:35,007 - INFO - Audio system appears ready
+2026-07-04 09:14:35,008 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-04 09:14:35,391 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-04 09:14:35,438 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-04 09:14:35,438 - INFO - Volume sync active. Monitoring...
+2026-07-04 09:14:39,955 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-13 11:55:59,396 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI24242\icon.ico
+2026-07-13 11:55:59,396 - INFO - Application initialized
+2026-07-13 11:55:59,396 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-13 11:55:59,397 - INFO - Starting volume sync...
+2026-07-13 11:55:59,397 - INFO - Volume sync started
+2026-07-13 11:55:59,397 - ERROR - Failed to update tray icon to icon_status_off.ico: 'NoneType' object has no attribute 'icon'
+2026-07-13 11:55:59,398 - INFO - Starting tray icon...
+2026-07-13 11:55:59,438 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-13 11:55:59,824 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-13 11:55:59,874 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-13 11:55:59,874 - INFO - Volume sync active. Monitoring...
+2026-07-13 11:56:04,410 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-17 19:04:41,086 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI204162\icon.ico
+2026-07-17 19:04:41,087 - INFO - Application initialized
+2026-07-17 19:04:41,087 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-17 19:04:41,087 - INFO - Starting volume sync...
+2026-07-17 19:04:41,087 - INFO - Volume sync started
+2026-07-17 19:04:41,088 - INFO - Starting tray icon...
+2026-07-17 19:04:41,089 - INFO - Tray icon updated to: icon_status_off.ico
+2026-07-17 19:04:41,133 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-17 19:04:41,547 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-17 19:04:41,600 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-17 19:04:41,601 - INFO - Volume sync active. Monitoring...
+2026-07-17 19:04:46,093 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-30 09:28:20,630 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI59802\icon.ico
+2026-07-30 09:28:20,630 - INFO - Detected startup launch - 63.3s since boot
+2026-07-30 09:28:20,630 - INFO - Application initialized
+2026-07-30 09:28:20,630 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-30 09:28:20,630 - INFO - Starting volume sync...
+2026-07-30 09:28:20,631 - INFO - Startup launch detected - waiting 5s for system to be ready...
+2026-07-30 09:28:20,631 - INFO - Volume sync started
+2026-07-30 09:28:20,632 - INFO - Starting tray icon...
+2026-07-30 09:28:20,632 - INFO - Tray icon updated to: icon_status_off.ico
+2026-07-30 09:28:25,632 - INFO - COM initialized successfully
+2026-07-30 09:28:25,699 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-30 09:28:25,700 - INFO - Audio system appears ready
+2026-07-30 09:28:25,739 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-30 09:28:26,115 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-30 09:28:26,170 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-30 09:28:26,170 - INFO - Volume sync active. Monitoring...
+2026-07-30 09:28:30,639 - INFO - Tray icon updated to: icon_status_on.ico
+2026-07-30 20:53:35,442 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI52322\icon.ico
+2026-07-30 20:53:35,443 - INFO - Application initialized
+2026-07-30 20:53:35,443 - INFO - Starting VolumeControl for Voicemeeter application
+2026-07-30 20:53:35,443 - INFO - Starting volume sync...
+2026-07-30 20:53:35,444 - INFO - Volume sync started
+2026-07-30 20:53:35,444 - INFO - Starting tray icon...
+2026-07-30 20:53:35,445 - INFO - Tray icon updated to: icon_status_off.ico
+2026-07-30 20:53:35,483 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-07-30 20:53:35,879 - INFO - Connected to Voicemeeter on attempt 1
+2026-07-30 20:53:35,943 - INFO - Initialized Windows volume interface (attempt 1)
+2026-07-30 20:53:35,943 - INFO - Volume sync active. Monitoring...
+2026-07-30 20:53:40,465 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 08:45:03,877 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI54402\icon.ico
+2026-08-13 08:45:03,877 - INFO - Application initialized
+2026-08-13 08:45:03,877 - INFO - Starting VolumeControl for Voicemeeter application
+2026-08-13 08:45:03,878 - INFO - Starting volume sync...
+2026-08-13 08:45:03,878 - INFO - Volume sync started
+2026-08-13 08:45:03,878 - INFO - Starting tray icon...
+2026-08-13 08:45:03,879 - INFO - Tray icon updated to: icon_status_off.ico
+2026-08-13 08:45:03,935 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-08-13 08:45:04,450 - INFO - Connected to Voicemeeter on attempt 1
+2026-08-13 08:45:04,543 - INFO - Initialized Windows volume interface (attempt 1)
+2026-08-13 08:45:04,544 - INFO - Volume sync active. Monitoring...
+2026-08-13 08:45:08,896 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 09:30:49,191 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI55682\icon.ico
+2026-08-13 09:30:49,191 - INFO - Detected startup launch - 53.9s since boot
+2026-08-13 09:30:49,191 - INFO - Application initialized
+2026-08-13 09:30:49,191 - INFO - Starting VolumeControl for Voicemeeter application
+2026-08-13 09:30:49,192 - INFO - Starting volume sync...
+2026-08-13 09:30:49,192 - INFO - Startup launch detected - waiting 5s for system to be ready...
+2026-08-13 09:30:49,192 - INFO - Volume sync started
+2026-08-13 09:30:49,192 - INFO - Starting tray icon...
+2026-08-13 09:30:49,193 - INFO - Tray icon updated to: icon_status_off.ico
+2026-08-13 09:30:54,193 - INFO - COM initialized successfully
+2026-08-13 09:30:54,261 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 09:30:54,261 - INFO - Audio system appears ready
+2026-08-13 09:30:54,300 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-08-13 09:30:54,654 - INFO - Connected to Voicemeeter on attempt 1
+2026-08-13 09:30:54,707 - INFO - Initialized Windows volume interface (attempt 1)
+2026-08-13 09:30:54,707 - INFO - Volume sync active. Monitoring...
+2026-08-13 09:30:59,198 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 16:58:49,732 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI145442\icon.ico
+2026-08-13 16:58:49,733 - INFO - Detected startup launch - 116.4s since boot
+2026-08-13 16:58:49,733 - INFO - Application initialized
+2026-08-13 16:58:49,733 - INFO - Starting VolumeControl for Voicemeeter application
+2026-08-13 16:58:49,733 - INFO - Starting volume sync...
+2026-08-13 16:58:49,733 - INFO - Startup launch detected - waiting 5s for system to be ready...
+2026-08-13 16:58:49,733 - INFO - Volume sync started
+2026-08-13 16:58:49,733 - INFO - Starting tray icon...
+2026-08-13 16:58:49,734 - INFO - Tray icon updated to: icon_status_off.ico
+2026-08-13 16:58:54,734 - INFO - COM initialized successfully
+2026-08-13 16:58:54,792 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 16:58:54,792 - INFO - Audio system appears ready
+2026-08-13 16:58:54,793 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-08-13 16:58:55,144 - INFO - Connected to Voicemeeter on attempt 1
+2026-08-13 16:58:55,194 - INFO - Initialized Windows volume interface (attempt 1)
+2026-08-13 16:58:55,194 - INFO - Volume sync active. Monitoring...
+2026-08-13 16:58:59,739 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 17:06:58,752 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI146002\icon.ico
+2026-08-13 17:06:58,752 - INFO - Application initialized
+2026-08-13 17:06:58,752 - INFO - Starting VolumeControl for Voicemeeter application
+2026-08-13 17:06:58,753 - INFO - Starting volume sync...
+2026-08-13 17:06:58,753 - INFO - Voicemeeter status changed: Disconnected
+2026-08-13 17:06:58,754 - INFO - Volume sync started
+2026-08-13 17:06:58,754 - INFO - Starting tray icon...
+2026-08-13 17:06:58,754 - INFO - Tray icon updated to: icon_status_off.ico
+2026-08-13 17:06:58,755 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-08-13 17:06:59,090 - INFO - Connected to Voicemeeter on attempt 1
+2026-08-13 17:06:59,148 - INFO - Initialized Windows volume interface (attempt 1)
+2026-08-13 17:06:59,148 - INFO - Volume sync active. Monitoring...
+2026-08-13 17:07:02,918 - DEBUG - Attempting to show About dialog using Windows MessageBox.
+2026-08-13 17:07:03,755 - INFO - Voicemeeter status changed: Disconnected
+2026-08-13 17:07:03,759 - INFO - Tray icon updated to: icon_status_on.ico
+2026-08-13 17:07:04,359 - DEBUG - About dialog shown successfully using Windows MessageBox.
+2026-08-13 17:18:11,297 - INFO - Quit requested from tray
+2026-08-13 17:18:11,297 - INFO - Stopping volume sync...
+2026-08-13 17:18:11,503 - INFO - Volume sync stopped
+2026-08-13 17:18:11,503 - INFO - Disconnected from Voicemeeter
+2026-08-13 17:18:13,513 - INFO - Volume sync stopped
+2026-08-13 17:18:13,583 - INFO - Application stopped
+2026-08-13 17:18:37,364 - INFO - Loaded tray icon from bundled resource: C:\Users\d\AppData\Local\Temp\_MEI40402\icon.ico
+2026-08-13 17:18:37,364 - INFO - Application initialized
+2026-08-13 17:18:37,364 - INFO - Starting VolumeControl for Voicemeeter application
+2026-08-13 17:18:37,365 - INFO - Starting volume sync...
+2026-08-13 17:18:37,365 - INFO - Voicemeeter status changed: Disconnected
+2026-08-13 17:18:37,365 - INFO - Volume sync started
+2026-08-13 17:18:37,365 - INFO - Starting tray icon...
+2026-08-13 17:18:37,367 - INFO - Tray icon updated to: icon_status_off.ico
+2026-08-13 17:18:37,367 - INFO - Loaded Voicemeeter DLL from: c:\Program Files (x86)\VB\Voicemeeter\VoicemeeterRemote64.dll (attempt 1)
+2026-08-13 17:18:37,705 - INFO - Connected to Voicemeeter on attempt 1 (code: 0)
+2026-08-13 17:18:37,755 - INFO - Initialized Windows volume interface (attempt 1)
+2026-08-13 17:18:37,755 - INFO - Volume sync active. Monitoring...
+2026-08-13 17:18:42,367 - INFO - Voicemeeter status changed: Disconnected
+2026-08-13 17:18:42,376 - INFO - Tray icon updated to: icon_status_on.ico
